@@ -124,7 +124,11 @@ public class TServerSocket
         try {
             s = serverSocket.accept();
         } catch (SocketTimeoutException e) {
+<<<<<<< HEAD
             //e.printStackTrace(); // just no-one wanted to connect...
+=======
+            //e.printStackTrace(); // just noone wanted to connect...
+>>>>>>> 949c65f500582af8b97f1e2a790cfb8028f61948
         }
         if (s != null)
         {

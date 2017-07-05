@@ -61,6 +61,7 @@ public class TClient
         return connected;
     }
 
+<<<<<<< HEAD
     public static void main(String[] args) throws Exception
     {
         TClient t = new TClient();
@@ -73,6 +74,14 @@ public class TClient
         {
 
         }
+=======
+    public static void main(String[] args)
+    {
+        TClient t = new TClient();
+        t.connect("localhost", 8345); //192.168.6.87
+        TClientCom c = t.getCom();
+        System.out.println(c.read().getData());
+>>>>>>> 949c65f500582af8b97f1e2a790cfb8028f61948
     }
 
 }
