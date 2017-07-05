@@ -1,111 +1,95 @@
 
 package tnet;
 
+import tlist.TListKey;
+import tnet.sockets.TSocket;
+import tnet.sockets.TServerSocket;
+import tnet.communication.TServerCom;
+
 import java.io.IOException;
 
-public class TServer extends TServerSocket
+public class TServer
 {
-    /**
-     * Saves the port and runs {@link #open()}
-     *
-     * @param int port The port the {@link #socket} is going to connect to when {@link #open()} is called
-     * @throws IOException if e.g. port is already used
-     */
-    public TServer(int port) throws IOException
+
+    private TServerSocket socket;
+
+    private TServerCom com;
+
+    private TListKey<TSocket, Integer> clients = new TListKey<TSocket, Integer>();
+
+    private boolean open = false;;
+
+    public TServer()
     {
-        super(port);
+
     }
 
-    public <D> D read() throws IOException
+    public TServerCom getCom()
     {
-        for (SocketConnection connection : connections)
+        return com;
+    }
+
+    public void open(int port)
+    {
+        close();
+
+        try {
+            socket = new TServerSocket(port);
+            com = new TServerCom(clients);
+            open = true;
+        } catch (IOException e) {
+            close();
+            e.printStackTrace();
+        }
+
+    }
+
+    public void close()
+    {
+        open = false;
+        if (socket != null)
         {
-            D obj = connection.<D>read();
-            if (obj != null)
+            socket.close();
+            socket = null;
+        }
+        if (com != null)
+        {
+            com.disable();
+        }
+        com = null;
+    }
+
+    public boolean acceptClient()
+    {
+        try {
+            TSocket s = socket.accept();
+            if (s != null)
             {
-                return obj;
+                clients.add(s);
             }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return null;
+        return false;
     }
 
-    /**
-     * Reads incoming messages from one Socket (IP)
-     *
-     * @param String ip The IP of the socket to read from
-     * @return The object of type <D>
-     * @throws IOException If an I/O error occurs
-     */
-    public <D> D read(String ip) throws IOException
+    public boolean isOpen()
     {
-        return connections.getKey(ip).<D>read();
-    }
-
-    /**
-     * Writes an object to all Streams
-     *
-     * @param D obj The object to be written
-     */
-    public <D> void write(D obj)
-    {
-        for (SocketConnection connection : connections)
-        {
-            try {
-                connection.<D>write(obj);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Writes an object only to one Stream with the IP
-     *
-     * @param D obj The object to be written
-     * @param String ip The IP of the Socket to write to
-     * @throws IOException If an I/O error occurs
-     */
-    public <D> void write(D obj, String ip) throws IOException
-    {
-        connections.getKey(ip).write(obj);
-    }
-
-    public int connections()
-    {
-        return connections.length();
-    }
-
-    public void _showConnectionIps()
-    {
-        for (SocketConnection connection : connections)
-        {
-            System.out.println(connection.getConnectionIp());
-        }
+        return open;
     }
 
     public static void main(String[] args)
     {
-        try {
-            TServer s1 = new TServer(4831);
-            System.out.println(s1.connections());
-            while (s1.accept() == null) {
-            }
+        TServer s = new TServer();
+        s.open(8345);
+        TServerCom c = s.getCom();
 
-            while (s1.accept() == null) {
-            }
-
-            while (s1.accept() == null) {
-            }
-
-            s1._showConnectionIps();
-
-            System.out.println(s1.connections());
-
-            Thread.sleep(500);
-
-            //s1.clientConnections.get(0).write("abc");
-        } catch (Exception e) {
-            e.printStackTrace();
+        while (true)
+        {
+            //System.out.println(s.clients.length());
+            s.acceptClient();
+            c.write("hi");
         }
     }
 
