@@ -64,8 +64,8 @@ public class TClient
     public static void main(String[] args) throws Exception
     {
         TClient t = new TClient();
-        t.connect("localhost", 8345);
-        //t.connect("192.168.6.87", 8345);
+        //t.connect("localhost", 8345);
+        t.connect("192.168.6.87", 8345);
         TClientCom c = t.getCom();
         Thread.sleep(100);
         System.out.println(c.read().getData());
