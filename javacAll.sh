@@ -15,7 +15,7 @@ function javacDir {
         if [ -f $CPSH ]; then
             #echo WHERE: $(pwd)
 	    #echo  CMD: javac -d $BIN $javaFile
-            javac -cp $(cat $CPSH) -d $BIN $javaFile
+            javac -cp $(cat $CPSH) -source 1.7 -target 1.7 -d $BIN $javaFile
         else
             javac -d $BIN $javaFile
         fi

@@ -11,7 +11,8 @@ public class TClientCom
 
     //// FIELDS ////
 
-    protected TListKey<TSocket, Integer> clients;
+    //protected TListKey<TSocket, Integer> clients;
+    protected TSocket client;
 
     private int uid = 0;
 
@@ -29,8 +30,9 @@ public class TClientCom
 
     public TClientCom(TSocket client)
     {
-        this.clients = new TListKey<TSocket, Integer>();
-        this.clients.add(client);
+        this.client = client;
+        //this.clients = new TListKey<TSocket, Integer>();
+        //this.clients.add(client);
         enabled = true;
     }
 
@@ -54,13 +56,10 @@ public class TClientCom
      */
     public <D> TNetData<D> read()
     {
-        for (TSocket client : clients)
+        D obj = client.<D>read();
+        if (obj != null)
         {
-            D obj = client.<D>read();
-            if (obj != null)
-            {
-                return new TNetData<D>(obj, client.key());
-            }
+            return new TNetData<D>(obj, client.key());
         }
         return null;
     }
@@ -72,10 +71,7 @@ public class TClientCom
      */
     public <D> void write(D obj)
     {
-        for (TSocket client : clients)
-        {
-            client.<D>write(obj);
-        }
+        client.<D>write(obj);
     }
 
     public int getUID()

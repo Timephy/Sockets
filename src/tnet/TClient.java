@@ -28,6 +28,14 @@ public class TClient
             socket = new TSocket(ip, port);
             com = new TClientCom(socket);
 
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            //socket.setUID(0);
+
             connected = true;
         } catch (IOException e) {
             disconnect();
@@ -65,13 +73,14 @@ public class TClient
     {
         TClient t = new TClient();
         //t.connect("localhost", 8345);
-        t.connect("192.168.6.87", 8345);
+        t.connect("192.168.68.97", 8345);
         TClientCom c = t.getCom();
         Thread.sleep(100);
         System.out.println(c.read().getData());
+        System.out.println("after");
         while(true)
         {
-
+            //if ()
         }
     }
 

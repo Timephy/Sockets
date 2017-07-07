@@ -6,8 +6,12 @@ import tnet.TNetData;
 
 import tlist.TListKey;
 
-public class TServerCom extends TClientCom
+public class TServerCom
 {
+
+    protected TListKey<TSocket, Integer> clients;
+
+    protected boolean enabled = false;
 
     public TServerCom(TListKey<TSocket, Integer> clients)
     {
@@ -47,6 +51,26 @@ public class TServerCom extends TClientCom
         } else {
             System.out.println("TCommunicator tried to write to not existing TClientCom " + uid);
         }
+    }
+
+    /**
+     * Writes an object only to all Streams (all clients)
+     *
+     * @param D obj The object to be written
+     * @throws IOException If an I/O error occurs
+     */
+    public <D> void write(D obj)
+    {
+        for (TSocket client : clients)
+        {
+            client.<D>write(obj);
+        }
+
+    }
+
+    public void disable()
+    {
+        enabled = false;
     }
 
 }

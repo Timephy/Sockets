@@ -83,6 +83,9 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
         this.socket = socket;
         out = new ObjectOutputStream(socket.getOutputStream()); //out always before in - otherwise gets stuck while creating ObjectInputStream
         in = new ObjectInputStream(socket.getInputStream());
+
+        setUID(this.<Integer>read());
+
         socket.setSoTimeout(timeout);
     }
 
@@ -123,7 +126,7 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
         try {
             out.writeObject(obj);
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
