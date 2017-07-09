@@ -65,12 +65,24 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
      * @param int port The port to connect the Socket to
      * @throws IOException is thrown when an error happens while getting and creating the streams
      */
-    public TSocket(String ip, int port) throws IOException
+    public TSocket(String ip, int port) throws IOException, ClassNotFoundException
     {
         Socket socket = new Socket();
-        socket.setSoTimeout(connectTimeout);
-        socket.connect(new InetSocketAddress(ip, port));
+
+        InetSocketAddress address = new InetSocketAddress(ip, port);
+        socket.connect(address, connectTimeout);
+
         init(socket);
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Integer i = this.<Integer>read();
+        //System.out.println(i); //debug
+        setUID(i);
     }
 
     /**
@@ -81,12 +93,16 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
     private void init(Socket socket) throws IOException
     {
         this.socket = socket;
-        out = new ObjectOutputStream(socket.getOutputStream()); //out always before in - otherwise gets stuck while creating ObjectInputStream
-        in = new ObjectInputStream(socket.getInputStream());
+        if (socket != null)
+        {
+            out = new ObjectOutputStream(socket.getOutputStream()); //out always before in - otherwise gets stuck while creating ObjectInputStream
+            in = new ObjectInputStream(socket.getInputStream());
 
-        setUID(this.<Integer>read());
+            socket.setSoTimeout(timeout);
+        } else {
+            System.out.println("TSocket.init(): Parameter is null!");
+        }
 
-        socket.setSoTimeout(timeout);
     }
 
     /**
@@ -94,13 +110,15 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
      */
     public void close()
     {
-        try {
-            in.close();
-            out.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //if (!socket.isClosed()) {
+            try {
+                //in.close();
+                //out.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        //}
     }
 
     /**
@@ -121,27 +139,38 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
         return socket.getLocalPort();
     }
 
-    public <D> void write(D obj)
+    public <D> void write(D obj) throws IOException
     {
-        try {
-            out.writeObject(obj);
-        } catch (IOException e) {
-            //e.printStackTrace();
-        }
+        out.writeObject(obj);
     }
 
     @SuppressWarnings("unchecked")
-    public <D> D read()
+    public <D> D read() throws IOException, ClassNotFoundException
     {
         D obj = null;
         try {
             obj = (D) in.readObject();
         } catch (SocketTimeoutException e) {
-            System.out.println("No data was sent - so nothing was able to be read.");
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
+            //System.out.println("No data was sent - so nothing was able to be read.");
+            //e.printStackTrace();
         }
         return obj;
+    }
+
+    @Deprecated
+    public <D> D waitUntilRead() throws IOException, ClassNotFoundException
+    {
+        D obj = null;
+        while (obj == null)
+        {
+            obj = this.<D>read();
+        }
+        return obj;
+    }
+
+    public boolean isClosed()
+    {
+        return socket.isClosed();
     }
 
     protected void setUID(int uid)

@@ -121,7 +121,7 @@ public class TServerSocket
      */
     public TSocket accept() throws IOException
     {
-        TSocket socket = null;
+        TSocket tsocket = null;
         Socket s = null;
         try {
             s = serverSocket.accept();
@@ -130,10 +130,12 @@ public class TServerSocket
         }
         if (s != null)
         {
-            socket = new TSocket(s);
-            socket.write(clientCounter++);
+            tsocket = new TSocket(s);
+            tsocket.setUID(clientCounter);
+            tsocket.write(clientCounter);
+            clientCounter++;
         }
-        return socket;
+        return tsocket;
     }
 
     public static void main(String[] args) throws Exception

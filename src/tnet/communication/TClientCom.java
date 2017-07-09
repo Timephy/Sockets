@@ -3,37 +3,24 @@ package tnet.communication;
 
 import tnet.sockets.TSocket;
 import tnet.TNetData;
+import tnet.TClient;
 
 import tlist.TListKey;
+
+import java.io.IOException;
 
 public class TClientCom
 {
 
     //// FIELDS ////
 
-    //protected TListKey<TSocket, Integer> clients;
-    protected TSocket client;
-
-    private int uid = 0;
-
-    protected boolean enabled = false;
+    private TClient client;
 
     //// CONSTRUCTORS ////
 
-    /**
-     * only for inheritation
-     */
-    public TClientCom()
-    {
-
-    }
-
-    public TClientCom(TSocket client)
+    public TClientCom(TClient client)
     {
         this.client = client;
-        //this.clients = new TListKey<TSocket, Integer>();
-        //this.clients.add(client);
-        enabled = true;
     }
 
     //// READ & WRITE ////
@@ -41,9 +28,12 @@ public class TClientCom
     public <D> TNetData<D> waitRead()
     {
         TNetData<D> data = null;
-        while (data == null)
+        if (canCommunicate()) // not needed, but stops unneeded tries
         {
-            data = read();
+            while (data == null)
+            {
+                data = read();
+            }
         }
         return data;
     }
@@ -56,10 +46,18 @@ public class TClientCom
      */
     public <D> TNetData<D> read()
     {
-        D obj = client.<D>read();
-        if (obj != null)
-        {
-            return new TNetData<D>(obj, client.key());
+        TSocket socket = client.getSocket();
+        if (canCommunicate()) {
+            try {
+                D obj = socket.<D>read();
+                if (obj != null)
+                {
+                    return new TNetData<D>(obj, socket.key());
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                errorWhileCommunicating(e);
+            }
+
         }
         return null;
     }
@@ -71,17 +69,31 @@ public class TClientCom
      */
     public <D> void write(D obj)
     {
-        client.<D>write(obj);
+        if (canCommunicate()) {
+            try {
+                client.getSocket().<D>write(obj);
+            } catch (IOException e) {
+                errorWhileCommunicating(e);
+            }
+        }
     }
 
-    public int getUID()
+    private void errorWhileCommunicating(Exception e) // ClassNotFoundException and IOException
     {
-        return uid;
+        //e.printStackTrace();
+        System.out.println("[TClientCom] Error while communicating, going to disconnect.");
+        client.disconnect();
     }
 
-    public void disable()
+    private boolean canCommunicate()
     {
-        enabled = false;
+        boolean can = false;
+        if (client != null) {
+            if (client.isConnected()) {
+                can = true;
+            }
+        }
+        return can;
     }
 
 }

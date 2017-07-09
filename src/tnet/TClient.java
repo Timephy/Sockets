@@ -20,13 +20,15 @@ public class TClient
 
     }
 
-    public void connect(String ip, int port)
+    public void connect(String ip, int port) throws IOException
     {
         disconnect();
 
+        System.out.println("[TClient] Trying to connected to " + ip + ":" + port);
+
         try {
             socket = new TSocket(ip, port);
-            com = new TClientCom(socket);
+            com = new TClientCom(this);
 
             try {
                 Thread.sleep(50);
@@ -34,20 +36,21 @@ public class TClient
                 e.printStackTrace();
             }
 
-            //socket.setUID(0);
-
             connected = true;
-        } catch (IOException e) {
+
+            System.out.println("[TClient] Connected (UID is " + socket.getUID() + ")");
+        } catch (IOException | ClassNotFoundException e) {
             disconnect();
-            e.printStackTrace();
+            System.out.println("[TClient] Connection failed!");
+            //throw e;
         }
 
     }
 
-    public TClientCom getCom()
-    {
-        return com;
-    }
+    // public TClientCom getCom()
+    // {
+    //     return com;
+    // }
 
     public void disconnect()
     {
@@ -56,11 +59,9 @@ public class TClient
         {
             socket.close();
             socket = null;
+            System.out.println("[TClient] Disconnected");
         }
-        if (com != null)
-        {
-            com.disable();
-        }
+
         com = null;
     }
 
@@ -69,18 +70,54 @@ public class TClient
         return connected;
     }
 
-    public static void main(String[] args) throws Exception
+    public TSocket getSocket()
+    {
+        return socket;
+    }
+
+    public TClientCom getCom()
+    {
+        return com;
+    }
+
+    public int getUID()
+    {
+        return socket.getUID();
+    }
+
+
+
+
+
+
+    public static void main(String[] args)
     {
         TClient t = new TClient();
-        //t.connect("localhost", 8345);
-        t.connect("192.168.68.97", 8345);
-        TClientCom c = t.getCom();
-        Thread.sleep(100);
-        System.out.println(c.read().getData());
-        System.out.println("after");
-        while(true)
+        try {
+            t.connect("localhost", 8345);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //t.connect("192.168.68.97", 8345);
+        TClientCom c = new TClientCom(t); // TODO add this CONSTRUCTOR
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        while (t.isConnected())
         {
-            //if ()
+            TNetData<String> d = c.read();
+            String s = null;
+            if (d != null) {
+                s = d.getData();
+            }
+            if (s != null) {
+                System.out.println(s);
+            }
+            //t.disconnect();
         }
     }
 

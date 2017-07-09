@@ -8,6 +8,8 @@ import tnet.communication.TServerCom;
 
 import java.io.IOException;
 
+import java.util.Scanner;
+
 public class TServer
 {
 
@@ -15,31 +17,32 @@ public class TServer
 
     private TServerCom com;
 
-    private TListKey<TSocket, Integer> clients = new TListKey<TSocket, Integer>();
+    private boolean open = false;
 
-    private boolean open = false;;
+    private TListKey<TSocket, Integer> clients = new TListKey<TSocket, Integer>();
 
     public TServer()
     {
 
     }
 
-    public TServerCom getCom()
-    {
-        return com;
-    }
-
-    public void open(int port)
+    public void open(int port) throws IOException
     {
         close();
 
+        System.out.println("[TServer] Trying to open on port " + port);
+
         try {
             socket = new TServerSocket(port);
-            com = new TServerCom(clients);
+            com = new TServerCom(this);
+
             open = true;
+            System.out.println("[TServer] Opened");
         } catch (IOException e) {
             close();
-            e.printStackTrace();
+            System.out.println("[TServer] Open failed!");
+            //e.printStackTrace();
+            throw e;
         }
 
     }
@@ -52,11 +55,6 @@ public class TServer
             socket.close();
             socket = null;
         }
-        if (com != null)
-        {
-            com.disable();
-        }
-        com = null;
     }
 
     public boolean acceptClient()
@@ -74,22 +72,107 @@ public class TServer
         return false;
     }
 
+    public void disconnect(TSocket client) // polite disconnect ("saying goodbye")
+    {
+        // TODO
+        kick(client);
+        System.out.println("[TServer] Disconnected from " + client.getUID());
+    }
+
+    public void disconnect(int clientUID) // polite disconnect ("saying goodbye")
+    {
+        disconnect(clients.getKey(clientUID));
+    }
+
+    public void kick(TSocket client) // rude disconnect
+    {
+        if (client != null) {
+            //if (!client.isClosed()) {
+                client.close();
+                clients.remove(client);
+                System.out.println("[TServer] Kicked client with UID " + client.getUID());
+            //}
+        }
+    }
+
+    public void kick(int clientUID) // rude disconnect
+    {
+        kick(clients.getKey(clientUID));
+    }
+
+    public TListKey<TSocket, Integer> getClients()
+    {
+        return clients;
+    }
+
     public boolean isOpen()
     {
         return open;
     }
 
+    public TServerCom getCom()
+    {
+        return com;
+    }
+
+
+
+
     public static void main(String[] args)
     {
         TServer s = new TServer();
-        s.open(8345);
+        try {
+            s.open(8345);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         TServerCom c = s.getCom();
 
-        while (true)
+        Scanner sc = new Scanner(System.in);
+
+        boolean running = true;
+
+        while (s.isOpen())
         {
-            //System.out.println(s.clients.length());
-            s.acceptClient();
-            c.write("hi");
+            String cmd = sc.nextLine();
+
+            if (cmd.equals("stop")) {
+                //System.out.println("Does: Stop");
+                s.close();
+
+
+            } else if (cmd.equals("close")) {
+                //System.out.println("Does: Close");
+                s.socket.close();
+
+
+            } else if (cmd.startsWith("write")) {
+                //System.out.println("Does: Write " + sc.next());
+                try {
+                    s.getCom().write(cmd.substring(6));
+                } catch (StringIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
+
+
+            } else if (cmd.equals("accept")) {
+                //System.out.println("Does: Accept");
+                s.acceptClient();
+
+
+            } else if (cmd.equals("count")) {
+                System.out.println(s.getClients().length());
+
+            } else if (cmd.startsWith("kick")) {
+                s.kick(Integer.parseInt(cmd.substring(5)));
+
+
+            } else {
+                System.out.println("Don't know command: " + cmd);
+
+
+            }
         }
     }
 
