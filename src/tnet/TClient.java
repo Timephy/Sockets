@@ -97,8 +97,8 @@ public class TClient
         } catch (IOException e) {
             e.printStackTrace();
         }
+        TClientCom c = t.getCom();
         //t.connect("192.168.68.97", 8345);
-        TClientCom c = new TClientCom(t);
 
         try {
             Thread.sleep(100);
