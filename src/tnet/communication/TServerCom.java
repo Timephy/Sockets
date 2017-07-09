@@ -3,20 +3,20 @@ package tnet.communication;
 
 import tnet.sockets.TSocket;
 import tnet.TNetData;
+import tnet.TServer;
 
 import tlist.TListKey;
+
+import java.io.IOException;
 
 public class TServerCom
 {
 
-    protected TListKey<TSocket, Integer> clients;
+    private TServer server;
 
-    protected boolean enabled = false;
-
-    public TServerCom(TListKey<TSocket, Integer> clients)
+    public TServerCom(TServer server)
     {
-        this.clients = clients;
-        enabled = true;
+        this.server = server;
     }
 
     /**
@@ -27,10 +27,15 @@ public class TServerCom
      */
     public <D> TNetData<D> read(int uid)
     {
-        TSocket client = clients.getKey(uid);
-        if (client != null) {
-            D obj = client.<D>read();
-            return new TNetData<D>(obj, client.key());
+        TSocket client = server.getClients().getKey(uid);
+        if (canCommunicate()) {
+            try {
+                D obj = client.<D>read();
+                return new TNetData<D>(obj, client.key());
+            } catch (IOException | ClassNotFoundException e) {
+                errorWhileCommunicating(e, client);
+                return null;
+            }
         } else {
             return null;
         }
@@ -45,9 +50,13 @@ public class TServerCom
      */
     public <D> void write(D obj, int uid)
     {
-        TSocket client = clients.getKey(uid);
-        if (client != null) {
-            client.<D>write(obj);
+        if (canCommunicate()) {
+            TSocket client = server.getClients().getKey(uid);
+            try {
+                client.<D>write(obj);
+            } catch (IOException e) {
+                errorWhileCommunicating(e, client);
+            }
         } else {
             System.out.println("TCommunicator tried to write to not existing TClientCom " + uid);
         }
@@ -61,16 +70,35 @@ public class TServerCom
      */
     public <D> void write(D obj)
     {
-        for (TSocket client : clients)
-        {
-            client.<D>write(obj);
-        }
+        if (canCommunicate()) {
+            for (TSocket client : server.getClients())
+            {
+                try {
+                    client.<D>write(obj);
+                } catch (IOException e) {
+                    errorWhileCommunicating(e, client);
+                }
 
+            }
+        }
     }
 
-    public void disable()
+    private void errorWhileCommunicating(Exception e, TSocket socket) // ClassNotFoundException and IOException
     {
-        enabled = false;
+        //e.printStackTrace();
+        System.out.println("[TServerCom] Error while communicating (Client with UID " + socket.getUID() + "), going to kick client.");
+        server.kick(socket);
+    }
+
+    private boolean canCommunicate()
+    {
+        boolean can = false;
+        if (server != null) {
+            if (server.isOpen()) {
+                can = true;
+            }
+        }
+        return can;
     }
 
 }
