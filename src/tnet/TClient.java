@@ -88,8 +88,8 @@ public class TClient
     {
         TClient t = new TClient();
         try {
-            t.connect("localhost", 8345);
-            //t.connect("192.168.68.97", 8345);
+            //t.connect("localhost", 8345);
+            t.connect("192.168.6.25", 8345);
         } catch (IOException e) {
             e.printStackTrace();
         }
