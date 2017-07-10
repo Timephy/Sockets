@@ -87,11 +87,9 @@ public class TServer
     public void kick(TSocket client) // rude disconnect
     {
         if (client != null) {
-            //if (!client.isClosed()) {
-                client.close();
-                clients.remove(client);
-                System.out.println("[TServer] Kicked client with UID " + client.getUID());
-            //}
+            client.close();
+            clients.remove(client);
+            System.out.println("[TServer] Kicked client with UID " + client.getUID());
         }
     }
 
@@ -138,17 +136,14 @@ public class TServer
             String cmd = sc.nextLine();
 
             if (cmd.equals("stop")) {
-                //System.out.println("Does: Stop");
                 s.close();
 
 
             } else if (cmd.equals("close")) {
-                //System.out.println("Does: Close");
                 s.socket.close();
 
 
             } else if (cmd.startsWith("write")) {
-                //System.out.println("Does: Write " + sc.next());
                 try {
                     s.getCom().write(cmd.substring(6));
                 } catch (StringIndexOutOfBoundsException e) {
@@ -157,7 +152,6 @@ public class TServer
 
 
             } else if (cmd.equals("accept")) {
-                //System.out.println("Does: Accept");
                 s.acceptClient();
 
 

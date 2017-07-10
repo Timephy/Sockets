@@ -112,8 +112,8 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
     {
         //if (!socket.isClosed()) {
             try {
-                //in.close();
-                //out.close();
+                //in.close(); // not needed
+                //out.close(); // not needed
                 socket.close();
             } catch (IOException e) {
                 e.printStackTrace();

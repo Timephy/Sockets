@@ -46,11 +46,6 @@ public class TClient
 
     }
 
-    // public TClientCom getCom()
-    // {
-    //     return com;
-    // }
-
     public void disconnect()
     {
         connected = false;
@@ -94,11 +89,11 @@ public class TClient
         TClient t = new TClient();
         try {
             t.connect("localhost", 8345);
+            //t.connect("192.168.68.97", 8345);
         } catch (IOException e) {
             e.printStackTrace();
         }
         TClientCom c = t.getCom();
-        //t.connect("192.168.68.97", 8345);
 
         try {
             Thread.sleep(100);
