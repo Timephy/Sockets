@@ -75,7 +75,7 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
         init(socket);
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
