@@ -8,4 +8,6 @@ public interface TCom
 
     public <D> TNetData<D> read();
 
+    public boolean canCommunicate();
+
 }

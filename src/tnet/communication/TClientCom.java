@@ -84,7 +84,7 @@ public class TClientCom implements TCom
         client.disconnect();
     }
 
-    private boolean canCommunicate()
+    public boolean canCommunicate()
     {
         boolean can = false;
         if (client != null) {
