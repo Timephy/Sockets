@@ -62,8 +62,8 @@ public class TServer
             if (s != null)
             {
                 clients.add(s);
+                return true;
             }
-            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -150,7 +150,7 @@ public class TServer
 
 
             } else if (cmd.equals("accept")) {
-                s.acceptClient();
+                System.out.println(s.acceptClient());
 
 
             } else if (cmd.equals("count")) {

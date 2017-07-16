@@ -121,13 +121,14 @@ public class TServerSocket
      */
     public TSocket accept() throws IOException
     {
-        TSocket tsocket = null;
         Socket s = null;
         try {
             s = serverSocket.accept();
         } catch (SocketTimeoutException e) {
             //e.printStackTrace(); // just no-one wanted to connect...
         }
+
+        TSocket tsocket = null;
         if (s != null)
         {
             tsocket = new TSocket(s);
