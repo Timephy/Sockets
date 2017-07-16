@@ -65,8 +65,12 @@ public class TServer
                 clients.add(s);
                 return true;
             }
+<<<<<<< HEAD
         }
         catch (IOException e) {
+=======
+        } catch (IOException e) {
+>>>>>>> 014fd1aca3e86ccd99a39a6b3c1ad40fd6336591
             e.printStackTrace();
         }
         return false;
