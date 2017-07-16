@@ -100,7 +100,7 @@ public class TServerCom implements TCom
         server.kick(socket);
     }
 
-    private boolean canCommunicate()
+    public boolean canCommunicate()
     {
         boolean can = false;
         if (server != null) {
