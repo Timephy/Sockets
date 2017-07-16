@@ -8,7 +8,7 @@ import tlist.TListKey;
 
 import java.io.IOException;
 
-public class TServerCom
+public class TServerCom implements TCom
 {
 
     private TServer server;
@@ -58,7 +58,6 @@ public class TServerCom
      *
      * @param D obj The object to be written
      * @param String ip The IP of the Socket to write to
-     * @throws IOException If an I/O error occurs
      */
     public <D> void write(D obj, int uid)
     {
@@ -78,7 +77,6 @@ public class TServerCom
      * Writes an object only to all Streams (all clients)
      *
      * @param D obj The object to be written
-     * @throws IOException If an I/O error occurs
      */
     public <D> void write(D obj)
     {

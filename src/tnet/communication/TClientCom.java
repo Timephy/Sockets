@@ -8,7 +8,7 @@ import tlist.TListKey;
 
 import java.io.IOException;
 
-public class TClientCom
+public class TClientCom implements TCom
 {
 
     //// FIELDS ////
