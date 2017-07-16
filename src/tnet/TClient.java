@@ -3,6 +3,7 @@ package tnet;
 
 import tnet.sockets.TSocket;
 import tnet.communication.TClientCom;
+import tnet.communication.TNetData;
 
 import java.io.IOException;
 
@@ -88,8 +89,8 @@ public class TClient
     {
         TClient t = new TClient();
         try {
-            //t.connect("localhost", 8345);
-            t.connect("192.168.6.25", 8345);
+            t.connect("localhost", 8345);
+            //t.connect("192.168.6.87", 8345);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,7 +2,6 @@
 package tnet.communication;
 
 import tnet.sockets.TSocket;
-import tnet.TNetData;
 import tnet.TClient;
 
 import tlist.TListKey;

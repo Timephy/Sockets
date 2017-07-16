@@ -68,14 +68,15 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
     public TSocket(String ip, int port) throws IOException, ClassNotFoundException
     {
         Socket socket = new Socket();
+        socket.setSoTimeout(connectTimeout);
 
         InetSocketAddress address = new InetSocketAddress(ip, port);
-        socket.connect(address, connectTimeout);
+        socket.connect(address);
 
         init(socket);
 
         try {
-            Thread.sleep(300);
+            Thread.sleep(500); // maybe too long
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

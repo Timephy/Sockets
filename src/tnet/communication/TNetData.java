@@ -1,5 +1,5 @@
 
-package tnet;
+package tnet.communication;
 
 public class TNetData<D>
 {

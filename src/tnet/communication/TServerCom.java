@@ -2,7 +2,6 @@
 package tnet.communication;
 
 import tnet.sockets.TSocket;
-import tnet.TNetData;
 import tnet.TServer;
 
 import tlist.TListKey;
@@ -19,6 +18,19 @@ public class TServerCom
         this.server = server;
     }
 
+    public <D> TNetData<D> read()
+    {
+        if (canCommunicate()) {
+            for (TSocket client : server.getClients())
+            {
+                TNetData<D> data = this.<D>read(client.key());
+                if (data != null)
+                    return data;
+            }
+        }
+        return null;
+    }
+
     /**
      * Reads incoming messages from one Socket (IP)
      *
@@ -31,14 +43,14 @@ public class TServerCom
         if (canCommunicate()) {
             try {
                 D obj = client.<D>read();
-                return new TNetData<D>(obj, client.key());
+                if (obj != null)
+                    return new TNetData<D>(obj, client.key());
             } catch (IOException | ClassNotFoundException e) {
                 errorWhileCommunicating(e, client);
                 return null;
             }
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

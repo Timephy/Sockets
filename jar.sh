@@ -4,13 +4,13 @@
 
 source javaproj.txt
 
-JARNAME=LifeVsLife
+JARNAME=TNet
 
 cd $BIN
 
 jar cfm $JAR$JARNAME.jar $PROJ/manifest.txt *
-cd $RES
-jar uf $JAR$JARNAME.jar *
+#cd $RES
+#jar uf $JAR$JARNAME.jar *
 cd $LIB
 jar uf $JAR$JARNAME.jar *
 
