@@ -57,8 +57,6 @@ public class TClient
             socket = null;
             System.out.println("[TClient] Disconnected");
         }
-
-        com = null;
     }
 
     public boolean isConnected()
@@ -95,13 +93,14 @@ public class TClient
         } catch (IOException e) {
             e.printStackTrace();
         }
-        TClientCom c = t.getCom();
 
+        TClientCom c = t.getCom();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("C "+ c);
 
         while (t.isConnected())
         {

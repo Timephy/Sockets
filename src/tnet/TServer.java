@@ -63,6 +63,7 @@ public class TServer
             if (s != null)
             {
                 clients.add(s);
+                System.out.println("[TServer] Client (UID "+s.getUID()+") connected");
                 return true;
             }
         }
