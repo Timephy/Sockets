@@ -36,7 +36,8 @@ public class TServer
             socket = new TServerSocket(port);
             open = true;
             System.out.println("[TServer] Opened");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             close();
             System.out.println("[TServer] Open failed!");
             //e.printStackTrace();
@@ -62,9 +63,10 @@ public class TServer
             if (s != null)
             {
                 clients.add(s);
+                return true;
             }
-            return true;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         return false;
@@ -87,7 +89,7 @@ public class TServer
         if (client != null) {
             client.close();
             clients.remove(client);
-            System.out.println("[TServer] Kicked client with UID " + client.getUID());
+            System.out.println("[TServer] Kicked client (UID " + client.getUID()+")");
         }
     }
 
@@ -110,7 +112,6 @@ public class TServer
     {
         return com;
     }
-
 
 
 
@@ -150,7 +151,7 @@ public class TServer
 
 
             } else if (cmd.equals("accept")) {
-                s.acceptClient();
+                System.out.println(s.acceptClient());
 
 
             } else if (cmd.equals("count")) {

@@ -18,7 +18,7 @@ public class TClient
 
     public TClient()
     {
-
+        com = new TClientCom(this);
     }
 
     public void connect(String ip, int port) throws IOException
@@ -29,17 +29,18 @@ public class TClient
 
         try {
             socket = new TSocket(ip, port);
-            com = new TClientCom(this);
 
             try {
                 Thread.sleep(50);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             connected = true;
             System.out.println("[TClient] Connected (UID is " + socket.getUID() + ")");
-        } catch (IOException | ClassNotFoundException e) {
+        }
+        catch (IOException | ClassNotFoundException e) {
             disconnect();
             System.out.println("[TClient] Connection failed!");
             //throw e;
