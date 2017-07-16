@@ -23,7 +23,7 @@ public class TServer
 
     public TServer()
     {
-
+        com = new TServerCom(this);
     }
 
     public void open(int port) throws IOException
@@ -34,8 +34,6 @@ public class TServer
 
         try {
             socket = new TServerSocket(port);
-            com = new TServerCom(this);
-
             open = true;
             System.out.println("[TServer] Opened");
         } catch (IOException e) {
