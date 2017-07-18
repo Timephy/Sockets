@@ -26,6 +26,10 @@ public class TServerCom implements TCom
                 TNetData<D> data = this.<D>read(client.key());
                 if (data != null)
                 {
+                    if (server.getWriteReadObjectsToAll())
+                    {
+                        write(data.getData());
+                    }
                     return data;
                 }
             }

@@ -21,6 +21,8 @@ public class TServer
 
     private TListKey<TSocket, Integer> clients = new TListKey<TSocket, Integer>();
 
+    private boolean writeReadObjectsToAll = false;
+
     public TServer()
     {
         com = new TServerCom(this);
@@ -112,6 +114,16 @@ public class TServer
     public TServerCom getCom()
     {
         return com;
+    }
+
+    public void setWriteReadObjectsToAll(boolean b)
+    {
+        writeReadObjectsToAll = b;
+    }
+
+    public boolean getWriteReadObjectsToAll()
+    {
+        return writeReadObjectsToAll;
     }
 
 
