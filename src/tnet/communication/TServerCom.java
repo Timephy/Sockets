@@ -26,10 +26,6 @@ public class TServerCom implements TCom
                 TNetData<D> data = this.<D>read(client.key());
                 if (data != null)
                 {
-                    if (server.getWriteReadObjectsToAll())
-                    {
-                        write(data.getData());
-                    }
                     return data;
                 }
             }
@@ -43,16 +39,30 @@ public class TServerCom implements TCom
      * @param String ip The IP of the socket to read from
      * @return The object of type <D>
      */
-    public <D> TNetData<D> read(int uid)
+    public <D> TNetData<D> read(final int uid)
     {
-        TSocket client = server.getClients().getKey(uid);
+        TListKey<TSocket, Integer> clients = server.getClients();
+        TSocket client = clients.getKey(uid);
         if (canCommunicate()) {
             try {
                 D obj = client.<D>read();
-                if (obj != null) {
+                if (obj != null)
+                {
+                    if (server.getWriteReadObjectsToAll())
+                    {
+                        for (TSocket otherClient : clients)
+                        {
+                            int otherUID = client.getUID();
+                            if (otherUID != uid)
+                            {
+                                write(obj, otherUID);
+                            }
+                        }
+                    }
                     return new TNetData<D>(obj, client.key());
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            }
+            catch (IOException | ClassNotFoundException e) {
                 errorWhileCommunicating(e, client);
                 return null;
             }
