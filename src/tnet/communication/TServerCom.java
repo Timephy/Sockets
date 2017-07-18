@@ -25,7 +25,9 @@ public class TServerCom implements TCom
             {
                 TNetData<D> data = this.<D>read(client.key());
                 if (data != null)
+                {
                     return data;
+                }
             }
         }
         return null;
@@ -43,8 +45,9 @@ public class TServerCom implements TCom
         if (canCommunicate()) {
             try {
                 D obj = client.<D>read();
-                if (obj != null)
+                if (obj != null) {
                     return new TNetData<D>(obj, client.key());
+                }
             } catch (IOException | ClassNotFoundException e) {
                 errorWhileCommunicating(e, client);
                 return null;

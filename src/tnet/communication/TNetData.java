@@ -1,7 +1,10 @@
 
 package tnet.communication;
 
-public class TNetData<D>
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class TNetData<D> implements Serializable
 {
 
     private D data;

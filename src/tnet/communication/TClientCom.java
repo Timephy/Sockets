@@ -51,7 +51,7 @@ public class TClientCom implements TCom
                 D obj = socket.<D>read();
                 if (obj != null)
                 {
-                    return new TNetData<D>(obj, socket.key());
+                    return new TNetData<D>(obj, -1);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 errorWhileCommunicating(e);
