@@ -52,7 +52,7 @@ public class TServerCom implements TCom
                     {
                         for (TSocket otherClient : clients)
                         {
-                            int otherUID = client.getUID();
+                            int otherUID = otherClient.getUID();
                             if (otherUID != uid)
                             {
                                 write(obj, otherUID);
