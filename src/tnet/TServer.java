@@ -126,6 +126,11 @@ public class TServer
         return writeReadObjectsToAll;
     }
 
+    public void setSoTimeout(int timeout)
+    {
+        socket.setSoTimeout(timeout);
+    }
+
 
 
     public static void main(String[] args)

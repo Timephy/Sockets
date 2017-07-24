@@ -24,7 +24,7 @@ public class TServerSocket
 
     private boolean open = false;
 
-    private int timeout = 50; // in ms
+    private int timeout = 5; // in ms
 
     private int clientCounter = 0;
 

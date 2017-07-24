@@ -12,6 +12,7 @@ import java.io.StreamCorruptedException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.net.SocketException;
 
 import tlist.TListKeyObject;
 
@@ -172,6 +173,16 @@ public class TSocket implements TListKeyObject<Integer> // let is please stay In
     public boolean isClosed()
     {
         return socket.isClosed();
+    }
+
+    public void setSoTimeout(int timeout)
+    {
+        try {
+            socket.setSoTimeout(timeout);
+        }
+        catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     protected void setUID(int uid)

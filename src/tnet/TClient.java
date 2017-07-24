@@ -79,6 +79,11 @@ public class TClient
         return socket.getUID();
     }
 
+    public void setSoTimeout(int timeout)
+    {
+        socket.setSoTimeout(timeout);
+    }
+
 
 
     public static void main(String[] args)
