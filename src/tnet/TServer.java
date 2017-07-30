@@ -10,8 +10,7 @@ import java.io.IOException;
 
 import java.util.Scanner;
 
-public class TServer
-{
+public class TServer {
 
     private TServerSocket socket;
 
@@ -23,13 +22,11 @@ public class TServer
 
     private boolean writeReadObjectsToAll = false;
 
-    public TServer()
-    {
+    public TServer() {
         com = new TServerCom(this);
     }
 
-    public void open(int port) throws IOException
-    {
+    public void open(int port) throws IOException {
         close();
 
         System.out.println("[TServer] Trying to open on port " + port);
@@ -38,8 +35,7 @@ public class TServer
             socket = new TServerSocket(port);
             open = true;
             System.out.println("[TServer] Opened");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             close();
             System.out.println("[TServer] Open failed!");
             //e.printStackTrace();
@@ -48,28 +44,23 @@ public class TServer
 
     }
 
-    public void close()
-    {
+    public void close() {
         open = false;
-        if (socket != null)
-        {
+        if (socket != null) {
             socket.close();
             socket = null;
         }
     }
 
-    public boolean acceptClient()
-    {
+    public boolean acceptClient() {
         try {
             TSocket s = socket.accept();
-            if (s != null)
-            {
+            if (s != null) {
                 clients.add(s);
-                System.out.println("[TServer] Client (UID "+s.getUID()+") connected");
+                System.out.println("[TServer] Client (UID " + s.getUID() + ") connected");
                 return true;
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return false;
@@ -92,7 +83,7 @@ public class TServer
         if (client != null) {
             client.close();
             clients.remove(client);
-            System.out.println("[TServer] Kicked client (UID " + client.getUID()+")");
+            System.out.println("[TServer] Kicked client (UID " + client.getUID() + ")");
         }
     }
 
@@ -101,40 +92,31 @@ public class TServer
         kick(clients.getKey(clientUID));
     }
 
-    public TListKey<TSocket, Integer> getClients()
-    {
+    public TListKey<TSocket, Integer> getClients() {
         return clients;
     }
 
-    public boolean isOpen()
-    {
+    public boolean isOpen() {
         return open;
     }
 
-    public TServerCom getCom()
-    {
+    public TServerCom getCom() {
         return com;
     }
 
-    public void setWriteReadObjectsToAll(boolean b)
-    {
+    public void setWriteReadObjectsToAll(boolean b) {
         writeReadObjectsToAll = b;
     }
 
-    public boolean getWriteReadObjectsToAll()
-    {
+    public boolean getWriteReadObjectsToAll() {
         return writeReadObjectsToAll;
     }
 
-    public void setSoTimeout(int timeout)
-    {
+    public void setSoTimeout(int timeout) {
         socket.setSoTimeout(timeout);
     }
 
-
-
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         TServer s = new TServer();
         try {
             s.open(8345);
@@ -148,17 +130,14 @@ public class TServer
 
         boolean running = true;
 
-        while (s.isOpen())
-        {
+        while (s.isOpen()) {
             String cmd = sc.nextLine();
 
             if (cmd.equals("stop")) {
                 s.close();
 
-
             } else if (cmd.equals("close")) {
                 s.socket.close();
-
 
             } else if (cmd.startsWith("write")) {
                 try {
@@ -167,10 +146,8 @@ public class TServer
                     e.printStackTrace();
                 }
 
-
             } else if (cmd.equals("accept")) {
                 System.out.println(s.acceptClient());
-
 
             } else if (cmd.equals("count")) {
                 System.out.println(s.getClients().length());
@@ -178,10 +155,8 @@ public class TServer
             } else if (cmd.startsWith("kick")) {
                 s.kick(Integer.parseInt(cmd.substring(5)));
 
-
             } else {
                 System.out.println("Don't know command: " + cmd);
-
 
             }
         }

@@ -1,4 +1,3 @@
-
 package tnet.sockets;
 
 import java.io.IOException;
@@ -12,8 +11,7 @@ import tlist.TListKey;
 /**
  * Has a ServerSocket and manages the connections
  */
-public class TServerSocket
-{
+public class TServerSocket {
 
     //// FIELDS ////
 
@@ -30,19 +28,17 @@ public class TServerSocket
 
     //// CONSTRUCTOR ////
 
-    public TServerSocket()
-    {
+    public TServerSocket() {
 
     }
 
     /**
      * Saves the port and runs {@link #open()}
      *
-     * @param int port The port the {@link #socket} is going to connect to when {@link #open()} is called
+     * @param int ort The port the {@link #socket} is going to connect to when {@link #open()} is called
      * @throws IOException if e.g. port is already used
      */
-    public TServerSocket(int port) throws IOException
-    {
+    public TServerSocket(int port) throws IOException {
         open(port);
     }
 
@@ -53,8 +49,7 @@ public class TServerSocket
      *
      * @throws IOException if e.g. the port is already used
      */
-    public void open(int port) throws IOException
-    {
+    public void open(int port) throws IOException {
         open = true;
         serverSocket = new ServerSocket(port);
         setSoTimeout(timeout);
@@ -63,10 +58,8 @@ public class TServerSocket
     /**
      * Closes the socket
      */
-    public void close()
-    {
-        if (isOpen())
-        {
+    public void close() {
+        if (isOpen()) {
             try {
                 open = false;
                 serverSocket.close(); //also closes socket
@@ -82,11 +75,9 @@ public class TServerSocket
     /**
      * @return The port {@link #socket} is connecting to, if is closed returns -1
      */
-    public int getPort()
-    {
+    public int getPort() {
         int port = -1;
-        if (isOpen())
-        {
+        if (isOpen()) {
             return serverSocket.getLocalPort();
         }
         return port;
@@ -95,8 +86,7 @@ public class TServerSocket
     /**
      * @return If the ServerSocket is open
      */
-    public boolean isOpen()
-    {
+    public boolean isOpen() {
         return open;
     }
 
@@ -105,8 +95,7 @@ public class TServerSocket
      *
      * @param int timeout The new timeout in ms
      */
-    public void setSoTimeout(int timeout)
-    {
+    public void setSoTimeout(int timeout) {
         try {
             serverSocket.setSoTimeout(timeout);
         } catch (SocketException e) {
@@ -119,8 +108,7 @@ public class TServerSocket
      *
      * @throws IOException if an I/O error occurs
      */
-    public TSocket accept() throws IOException
-    {
+    public TSocket accept() throws IOException {
         Socket s = null;
         try {
             s = serverSocket.accept();
@@ -129,8 +117,7 @@ public class TServerSocket
         }
 
         TSocket tsocket = null;
-        if (s != null)
-        {
+        if (s != null) {
             tsocket = new TSocket(s);
             tsocket.setUID(clientCounter);
             tsocket.write(clientCounter);
@@ -139,8 +126,7 @@ public class TServerSocket
         return tsocket;
     }
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         TServerSocket s = new TServerSocket(4831);
         TSocket socket = null;
         while (socket == null) {
